@@ -1,0 +1,392 @@
+#include<stdio.h>
+#include<conio.h>
+#include<string.h>
+typedef struct Employee
+{
+    char empID[15];
+    char fname[20];
+    char lname[20];
+    int age;
+    float bsal;
+    long phone;
+} Employee;
+
+
+FILE *fp;
+Employee emp;
+char fileName[]="EMP.txt";
+char tempFileName[]="temp.txt";
+
+void AddEmployee();
+void ListEmployee();
+void SearchEmployee();
+void ModifyEmployee();
+void DeleteEmployee();
+
+char file();
+void main()
+{
+    char ch='a';
+
+    system("cls");
+
+    fp=fopen(fileName,"rb+");
+    if(fp==NULL)
+    {
+        fp=fopen( fileName,"wb+");
+        if(fp==NULL)
+        {
+            printf("Can't Open File");
+        }
+    }
+    while(ch!='6')
+    {
+        ch=file();
+        switch(ch)
+        {
+        case '1':
+            system("cls");
+            AddEmployee();
+            break;
+        case '2':
+            system("cls");
+            ListEmployee();
+            break;
+        case '3':
+            system("cls");
+            SearchEmployee();
+            break;
+        case '4':
+            system("cls");
+            ModifyEmployee();
+            break;
+        case '5':
+            system("cls");
+            DeleteEmployee();
+            break;
+        case '6':
+            system("cls");
+            exit(0);
+            break;
+        default:
+
+            printf("WRONG CHOICE!!! Enter (1-6)...\n");
+            getch();
+            break;
+        }
+    }
+}
+void AddEmployee()
+{
+    char another,ch;
+    do
+    {
+        system("cls");
+        fseek(fp,0,SEEK_END);
+        another='Y';
+        printf("\t\t\xb2\xb2 ADD EMPLOYEE RECORD \xb2\xb2\t\t");
+
+printf("\n");
+        printf("1.ENTER EMPLOYEE ID: ");
+        gets(emp.empID);
+        printf("\n");
+        printf("2.ENTER FIRST NAME OF EMPLOYEE: ");
+        gets(emp.fname);
+        printf("\n");
+        printf("3. ENTER LAST NAME OF EMPLOYEE: ");
+        gets(emp.lname);
+        printf("\n");
+        printf("4. ENTER AGE OF EMPLOYEE: ");
+        scanf("%d",&emp.age);
+        printf("\n");
+        printf("5. ENTER SALARY OF EMPLOYEE: ");
+        scanf("%f",&emp.bsal);
+        printf("\n");
+        printf("6.ENTER PHONE OF EMPLOYEE:");
+        scanf("%ld",&emp.phone);
+        printf("\n");
+
+        printf("\t\t\t\t\xb2SAVE CHANGE (y/n)?");
+        ch=getch();
+
+        if(ch=='y'||ch=='Y')
+        {
+            fwrite(&emp,sizeof(emp),1,fp);
+            fflush(stdin);
+        }
+        printf("\n\n");
+
+        printf("\t\t\t\t\xb2ADD ANOTHER EMPLOYEE(Y/N)?");
+        fflush(stdin);
+        another=getch();
+        fflush(stdin);
+    }
+    while(another=='Y'|| another=='y');
+    system("cls");
+}
+void ListEmployee()
+{
+    int i;
+    fseek(fp,0,SEEK_SET);
+
+    printf("\t\t\xb2\xb2 LIST OF EMPLOYEE RECORD \xb2\xb2\t\t\n\n");
+
+
+
+
+    while(fread(&emp,sizeof(emp),1,fp)==1)
+    {
+        printf("EMP ID: ");
+        printf("%s",emp.empID);
+        printf("\n");
+         printf("FIRST NAME: ");
+        printf("%s",emp.fname);
+        printf("\n");
+        printf("LAST NAME: ");
+        printf("%s",emp.lname);
+        printf("\n");
+        printf("AGE: ");
+        printf("%d",emp.age);
+        printf("\n");
+        printf("SALARY: ");
+        printf("%.2f",emp.bsal);
+        printf("\n");
+        printf("PHONE: ");
+        printf("%ld",emp.phone);
+        printf("\n");
+        printf("______________________________________________________________");
+        printf("\n\n");
+        i++;
+    }
+    getch();
+}
+void SearchEmployee()
+{
+    int i,datafound=0;
+    char employeeId[15];
+    char another,ch;
+    do
+    {
+        system("cls");
+        fseek(fp,0,SEEK_SET);
+        printf("\t\t\xb2\xb2 SEARCH EMPLOYEE RECORD \xb2\xb2\t\t");
+        printf("\n");
+        printf("ENTER EMPLOYEE ID: ");
+        gets(employeeId);
+        while(fread(&emp,sizeof(emp),1,fp)==1)
+        {
+            if(strcmp(emp.empID,employeeId)==0)
+            {
+                datafound=1;
+                break;
+            }
+        }
+        if(datafound==1)
+        {
+
+printf("\n\n");
+            printf("\xb2\xb2 RECORD OF EMPLOYEE \xb2\xb2\t\t");
+
+            printf("\n\n");
+
+            printf("FIRST NAME :");
+            printf("%s",emp.fname);
+            printf("\n");
+            printf("LAST NAME :");
+            printf("%s",emp.lname);
+            printf("\n");
+            printf("AGE :");
+            printf("%d",emp.age);
+            printf("\n");
+            printf("BASIC SALARY :");
+            printf("%.2f",emp.bsal);
+            printf("\n");
+            printf("PHONE :");
+            printf("%ld",emp.phone);
+            printf("\n");
+        }
+        else
+        {
+            printf("\n\n");
+            printf("\t\tEMPLOYEE NOT FOUND!!!!!\t\t");
+        }
+
+
+printf("\n\n");
+        printf("SEARCH ANOTHER EMPLOYEE(Yes/No)?");
+        fflush(stdin);
+        another=getch();
+        fflush(stdin);
+
+    }
+    while(another=='Y'|| another=='y');
+}
+void ModifyEmployee()
+{
+    int i, datafound=0,recordNo=0;
+    char employeeId[15];
+    char another,ch;
+    do
+    {
+        system("cls");
+        fseek(fp,0,SEEK_SET);
+        rewind(fp);
+        printf("\t\t\xb2\xb2 MODIFY EMPLOYEE RECORD \xb2\xb2\t\t\n");
+        printf("ENTER EMPLOYEE ID TO BE MODIFIED:");
+        gets(employeeId);
+        while(fread(&emp,sizeof(emp),1,fp)==1)
+        {
+            if(strcmp(emp.empID,employeeId)==0)
+            {
+                datafound=1;
+                break;
+            }
+            recordNo++;
+        }
+        if(datafound==1)
+        {
+            printf("\t\xb1\xb1 OLD RECORD \xb1\xb1\t");
+            printf("\n");
+            printf("EMPLOYEE ID :");
+            printf("%s",emp.empID);
+            printf("\n");
+            printf("FIRST NAME :");
+            printf("%s",emp.fname);
+            printf("\n");
+            printf("LAST NAME :");
+            printf("%s",emp.lname);
+            printf("\n");
+            printf("AGE :");
+            printf("%d",emp.age);
+            printf("\n");
+            printf("BASIC SALARY :");
+            printf("%.2f",emp.bsal);
+            printf("\n");
+            printf("PHONE :");
+            printf("%ld",emp.phone);
+            printf("\n\n\n");
+            printf("\t\xb1\xb1 NEW RECORD \xb1\xb1\t");
+            printf("\n\n\n");
+            printf("EMPLOYEE ID:");
+            gets(emp.empID);
+            printf("\n");
+            printf("FIRST NAME :");
+            gets(emp.fname);
+            printf("\n");
+            printf("LAST NAME :");
+            gets(emp.lname);
+            printf("\n");
+            printf("AGE :");
+            scanf("%d",&emp.age);
+            printf("\n");
+            printf("BASIC SALARY :");
+            scanf("%f",&emp.bsal);
+            printf("\n");
+            printf("PHONE :");
+            scanf("%ld",&emp.phone);
+            printf("\n");
+            fseek(fp,sizeof(emp)*(recordNo),SEEK_SET);
+
+
+            if(fwrite(&emp,sizeof(emp),1,fp)==1)
+                printf("\t\t\t\xb2 THE RECORD HAS BEEN MODIFIED!!!!! \xb2\t\t\t");
+            else
+                printf("\t\t\t\xb2 EROR DURING MODIFICATION!!!!! \xb2\t\t\t");
+        }
+        else
+        {
+            printf("\t\t\t\xb2 EMPLOYEE NOT FOUND!!!!! \xb2\t\t\t");
+        }
+printf("\n");
+        printf("MODIFY ANOTHER EMPLOYEE(Y/N)?");
+        fflush(stdin);
+        another=getch();
+        fflush(stdin);
+
+    }
+    while(another=='Y'||another=='y');
+}
+void DeleteEmployee()
+{
+    int i,datafound=0;
+    char employeeId[15];
+    FILE *fpTemp;
+    char another,ch;
+    do
+    {
+        system("cls");
+        fseek(fp,0,SEEK_SET);
+        rewind(fp);
+
+        printf("\t\t\xb2\xb2 DELETE EMPLOYEE RECORD \xb2\xb2\t\t\n");
+
+        printf("ENTER EMPLOYEE ID TO BE DELETED:");
+        gets(employeeId);
+        while(fread(&emp,sizeof(emp),1,fp)==1)
+        {
+            if(strcmp(emp.empID,employeeId)==0)
+            {
+                datafound=1;
+                break;
+            }
+        }
+        if(datafound==1)
+        {
+            fpTemp=fopen(tempFileName,"wb");
+            rewind(fp);
+            while(fread(&emp,sizeof(emp),1,fp)==1)
+            {
+                if(strcmp(emp.empID,employeeId)!=0)
+                    fwrite(&emp,sizeof(emp),1,fpTemp);
+            }
+            fclose(fp);
+            fclose(fpTemp);
+            remove(fileName);
+            rename(tempFileName,fileName);
+            fp=fopen(fileName,"rb+");
+            printf("\t\t\t\xb2 SUCCESSFULLY DELETED!!!!! \xb2\t\t\t\n");
+        }
+        else
+        {
+            printf("\t\t\t\xb2 EMPLOYEE NOT FOUND!!!!! \xb2\t\t\t\n");
+        }
+        printf("DELETE ANOTHER EMPLOYEE(Yes/No)?");
+        fflush(stdin);
+        another=getch();
+        fflush(stdin);
+
+    }
+    while(another=='Y'|| another=='y');
+}
+
+char file()
+{
+
+    char i;
+    system("cls");
+
+    printf("\t\t\xb2\xb2\xb2 EMPLOYEE INFORMATION SYSTEM \xb2\xb2\xb2\t\t");
+    printf("\n\n\n");
+
+    printf("\xb1\xb1\xb1 MAIN MENU \xb1\xb1\xb1");
+    printf("\n\n");
+
+    printf("\xb2 1.ADD EMPLOYEE.");
+    printf("\n\n");
+    printf("\xb2 2.LIST OF ALL EMPLOYEE.");
+    printf("\n\n");
+    printf("\xb2 3.SEARCH A PARTICULR EMPLOYEE.");
+    printf("\n\n");
+    printf("\xb2 4.MODIFY INFORMATION.");
+    printf("\n\n");
+    printf("\xb2 5.DELETE An EMPLOYEE.");
+    printf("\n\n");
+    printf("\xb2 6.EXIT.");
+    printf("\n\n");
+
+    printf("\t\t\tENTER YOUR CHOICE: ");
+    i=getch();
+
+    return (i);
+}
+
